@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|PT+Sans|Roboto+Condensed" rel="stylesheet">
+    <title>Scoresheet</title>
+
+    <link href="../css/volleyball.css" rel="stylesheet">
+    <script src="../js/volleyball.js"></script>
+
+</head>
+<body>
+    <div class="content">
+
+        <div class="section">
+            <span class="sectionTitle">
+                General Info
+            </span>
+            <br>
+
+            <div class="sectionChild tableParent">
+                <label for="homeInp" class="condensed tableChild">Home Game</label>
+                <input type="checkbox" name="homeInp" value="Home" class="tableChild" checked>
+            </div>
+            
+            <div class="sectionChild tableParent">
+                <label for="opponentInp" class="condensed tableChild">Opponent&nbsp;</label>
+                <input type="text" name="opponentInp" class="tableChild">
+            </div>
+
+            <div class="sectionChild tableParent">
+                <label for="dateInp" class="condensed tableChild">Date&nbsp;</label>
+                <input name="dateInp" type="date" class="tableChild">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="section">
+            <span class="sectionTitle">
+                Add Point
+            </span>
+            <br>
+
+            <div class="sectionChild">
+
+                <input type="button" onclick="alert('Hello World!')" value="&nbsp;OUR POINT&nbsp;" class="condensed">
+                
+            </div>
+            <div class="sectionChild">
+            
+                <input type="button" onclick="alert('Hello World!')" value="THEIR POINT" class="condensed">
+            
+            </div>
+
+            <div class="n"></div>
+
+            <div class="sectionChild">
+                
+                <input type="button" onclick="alert('Hello World!')" value="OUR ERROR" class="condensed">
+
+            </div>
+
+            <div class="sectionChild">
+            
+                <input type="button" onclick="alert('Hello World!')" value="&nbsp;THEIR KILL" class="condensed">
+            
+            </div>
+
+            <div class="n"></div>
+            <div class="n"></div>
+
+            <div class="sectionChild">
+                <div class="dropdown">
+                    <div class="dropdownParent">
+                        <div class="material-icons" id="dropdownParent-icon">person_outline</div>
+                        <div id="dropdownParent-player">Player</div>
+                    </div>
+
+                    <div class="dropdownChild">
+                        Michelle (12)
+                    </div>
+                    <div class="dropdownChild">
+                        Lauren (9)
+                    </div>
+                    <div class="dropdownChild">
+                        Carolyn (3)
+                    </div>
+                </div>
+            </div>
+
+            <div class="sectionChild">
+                <div class="dropdown">
+                    <div class="dropdownParent">
+                        <div class="material-icons" id="dropdownParent-icon">person_outline</div>
+                        <div id="dropdownParent-player">Reason</div>
+                    </div>
+            
+                    <div class="dropdownChild">
+                        Service Error
+                    </div>
+                    <div class="dropdownChild">
+                        Ball Handling Error
+                    </div>
+                    <div class="dropdownChild">
+                        Double
+                    </div>
+                </div>
+            </div>
+
+            <div class="sectionChild">
+            
+                <input type="button" onclick="alert('Hello World!')" value="ADD POINT" class="outline condensed">
+            
+            </div>
+
+        </div>
+
+        <!-- <div class="section">
+            <div class="sectionChild">
+
+            </div>
+        </div> -->
+        
+    </div>
+</body>
+</html>
