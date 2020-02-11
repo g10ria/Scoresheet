@@ -3,6 +3,10 @@ body {
     user-select: none;
 }
 
+.gone {
+    display: none !important;
+}
+
 .condensed {
     font-family: "Roboto Condensed", sans-serif;
 }
@@ -19,6 +23,10 @@ body {
 .content {
     margin: 20px auto;
     text-align: center;
+    
+    @media (min-width: 900px) {
+        width: 60vw;
+    }
 
     .section {
         .sectionTitle {
@@ -31,15 +39,17 @@ body {
         .sectionChild {
             margin: 10px 15px;
         }
-        .n {    // basically a 10px tall line breaker
-            width: 100%;
-            height: 10px;
+        .n {
+            flex-basis: 100%;
+            height: 0;
         }
         padding: 20px;
         display: inline-flex;
         flex-flow: row wrap;
         justify-content: center;
-        margin: 20px;
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
         border-radius: 5px;
         border-width: 1px;
         box-shadow: 1px 1px 5px 5px #eaeaea;
@@ -97,6 +107,11 @@ input[type=button]:focus {
     outline: none;
 }
 
+input[type=button]:disabled {
+    cursor: default;
+    opacity: 0.75
+}
+
 input[type=button].outline {
     border-color: #eaeaea;
     border-style: solid;
@@ -106,6 +121,11 @@ input[type=button].outline {
     &:hover {
         background-color: #eaeaea;
     }
+}
+
+.selectedButton {
+    color: white;
+    background-color: gray;
 }
 
 input[type=text], input[type=date] {

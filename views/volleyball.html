@@ -8,7 +8,7 @@
     <title>Scoresheet</title>
 
     <link href="../css/volleyball.css" rel="stylesheet">
-    <script src="../js/volleyball.js"></script>
+    <script src="../js/volleyball.js" defer></script>
 
 </head>
 <body>
@@ -22,17 +22,17 @@
 
             <div class="sectionChild tableParent">
                 <label for="homeInp" class="condensed tableChild">Home Game</label>
-                <input type="checkbox" name="homeInp" value="Home" class="tableChild" checked>
+                <input type="checkbox" name="homeInp" value="Home" class="tableChild" checked id="homegameInp">
             </div>
             
             <div class="sectionChild tableParent">
                 <label for="opponentInp" class="condensed tableChild">Opponent&nbsp;</label>
-                <input type="text" name="opponentInp" class="tableChild">
+                <input type="text" name="opponentInp" class="tableChild" id="opponentInp">
             </div>
 
             <div class="sectionChild tableParent">
                 <label for="dateInp" class="condensed tableChild">Date&nbsp;</label>
-                <input name="dateInp" type="date" class="tableChild">
+                <input name="dateInp" type="date" class="tableChild" id="dateInp">
             </div>
         </div>
 
@@ -46,73 +46,73 @@
 
             <div class="sectionChild">
 
-                <input type="button" onclick="alert('Hello World!')" value="&nbsp;OUR POINT&nbsp;" class="condensed">
+                <input type="button" onclick="triggerAddPointFirstClick(true)" value="&nbsp;OUR POINT&nbsp;" class="condensed" id="addpoint-ours">
                 
             </div>
             <div class="sectionChild">
             
-                <input type="button" onclick="alert('Hello World!')" value="THEIR POINT" class="condensed">
+                <input type="button" onclick="triggerAddPointFirstClick(false)" value="THEIR POINT" class="condensed" id="addpoint-theirs">
             
             </div>
 
             <div class="n"></div>
 
-            <div class="sectionChild">
+            <div class="sectionChild gone" id="addpoint-error1-parent">
                 
-                <input type="button" onclick="alert('Hello World!')" value="OUR ERROR" class="condensed">
+                <input type="button" onclick="triggerAddPointSecondClick(true)" value="-" class="condensed" id="addpoint-error1">
 
             </div>
 
-            <div class="sectionChild">
+            <div class="sectionChild gone" id="addpoint-error2-parent">
             
-                <input type="button" onclick="alert('Hello World!')" value="&nbsp;THEIR KILL" class="condensed">
+                <input type="button" onclick="triggerAddPointSecondClick(false)" value="-" class="condensed" id="addpoint-error2">
             
             </div>
 
             <div class="n"></div>
             <div class="n"></div>
 
-            <div class="sectionChild">
-                <div class="dropdown">
+            <div class="sectionChild gone" id="addpoint-player-parent">
+                <div class="dropdown" id="addpoint-player-dropdown">
                     <div class="dropdownParent">
                         <div class="material-icons" id="dropdownParent-icon">person_outline</div>
                         <div id="dropdownParent-player">Player</div>
                     </div>
 
-                    <div class="dropdownChild">
+                    <div class="dropdownChild player-opts">
                         Michelle (12)
                     </div>
-                    <div class="dropdownChild">
+                    <div class="dropdownChild player-opts">
                         Lauren (9)
                     </div>
-                    <div class="dropdownChild">
+                    <div class="dropdownChild player-opts">
                         Carolyn (3)
                     </div>
                 </div>
             </div>
 
-            <div class="sectionChild">
-                <div class="dropdown">
+            <div class="sectionChild gone" id="addpoint-reason-parent">
+                <div class="dropdown" id="addpoint-reason-dropdown">
                     <div class="dropdownParent">
                         <div class="material-icons" id="dropdownParent-icon">person_outline</div>
-                        <div id="dropdownParent-player">Reason</div>
+                        <div id="dropdownParent-reason">Reason</div>
                     </div>
             
-                    <div class="dropdownChild">
+                    <div class="dropdownChild reason-opts">
                         Service Error
                     </div>
-                    <div class="dropdownChild">
+                    <div class="dropdownChild reason-opts">
                         Ball Handling Error
                     </div>
-                    <div class="dropdownChild">
+                    <div class="dropdownChild reason-opts">
                         Double
                     </div>
                 </div>
             </div>
 
-            <div class="sectionChild">
+            <div class="sectionChild gone" id="addpoint-submit-parent">
             
-                <input type="button" onclick="alert('Hello World!')" value="ADD POINT" class="outline condensed">
+                <input type="button" onclick="triggerAddPointSubmit()" value="ADD POINT" class="outline condensed">
             
             </div>
 
