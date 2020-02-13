@@ -121,22 +121,63 @@
         <div class="section">
             <table id="pointTable">
 
-                <tr>
-                    <th class="pointsGrid-header"></th>
-                    <th class="pointsGrid-header">
-                        Point
-                    </th>
-                    <th class="pointsGrid-header">
-                        Error/Kill
-                    </th>
-                    <th class="pointsGrid-header">
-                        Player
-                    </th>
-                    <th class="pointsGrid-header">
-                        Reason
-                    </th>
-                    <th class="pointsGrid-header"></th>
-                </tr>
+                <thead>
+                    <tr>
+                        <th class="pointsGrid-header"></th>
+                        <th class="pointsGrid-header">
+                            Point
+                        </th>
+                        <th class="pointsGrid-header">
+                            Error/Kill
+                        </th>
+                        <th class="pointsGrid-header">
+                            Player
+                        </th>
+                        <th class="pointsGrid-header">
+                            Reason
+                        </th>
+                        <th class="pointsGrid-header"></th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <tr ondrop="handledrop(event)" ondragover="handledragover(event)" ondragleave="handledragleave(event)"
+                        class="draglistener">
+                        <td colspan="6"></td>
+                    </tr>
+                    
+                    <tr class="pointsGrid-row" draggable="true" ondragstart="handledragstart(event)" id="yh"
+                        ondragend="handledragend(event)">
+                    
+                        <td class="pointsGrid-drag material-icons c">drag_indicator</td>
+                        <td class="pointsGrid-point c pointsGrid-point-ours"></td>
+                        <td class="pointsGrid-error c">Their error</td>
+                        <td class="pointsGrid-player c">John Pencil (12)</td>
+                        <td class="pointsGrid-reason c">errorreason1</td>
+                        <td class="pointsGrid-trash material-icons c">delete_outline</td>
+                    </tr>
+                    
+                    <tr ondrop="handledrop(event)" ondragover="handledragover(event)" ondragleave="handledragleave(event)"
+                        class="draglistener">
+                        <td colspan="6"></td>
+                    </tr>
+                    
+                    <tr class="pointsGrid-row" draggable="true" ondragstart="handledragstart(event)" id="yah"
+                        ondragend="handledragend(event)">
+                    
+                        <td class="pointsGrid-drag material-icons c">drag_indicator</td>
+                        <td class="pointsGrid-point c pointsGrid-point-ours"></td>
+                        <td class="pointsGrid-error c">Their asdf</td>
+                        <td class="pointsGrid-player c">John Pencil (12)</td>
+                        <td class="pointsGrid-reason c">errorreason1</td>
+                        <td class="pointsGrid-trash material-icons c">delete_outline</td>
+                    </tr>
+                    
+                    <tr ondrop="handledrop(event)" ondragover="handledragover(event)" ondragleave="handledragleave(event)"
+                        class="draglistener">
+                        <td colspan="6"></td>
+                    </tr>
+                </tbody>
 
             </table>
         </div>

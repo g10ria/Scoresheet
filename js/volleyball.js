@@ -326,3 +326,78 @@ function updateTrashListeners() {
         })
     }
 }
+
+let draggedElement = null
+
+function handledragstart(e) {
+    e.dataTransfer.dropEffect = "move"
+    e.dataTransfer.setData("text/plain", e.target.id)
+    e.target.classList.add("translucent")
+
+    draggedElement = e.target
+    console.log(draggedElement)
+}
+
+function handledragend(e) {
+    e.target.classList.remove("translucent")
+    let dragTargets = document.getElementsByClassName("draglistener")
+    for (let i=0;i<dragTargets.length;i++) {
+        dragTargets[i].classList.remove("dragselected")
+    }
+}
+
+function handledragover(e) {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "move"
+
+    if (validDragListener(e.target.parentNode)) {
+        e.target.classList.add("dragselected")
+    }
+}
+
+function handledragleave(e) {
+    e.target.classList.remove("dragselected")
+}
+
+function handledrop(e) {
+    e.preventDefault()
+    let id = e.dataTransfer.getData("text/plain")
+
+    if (validDragListener(e.target.parentNode)) {
+        let newListener = htmlToElement(`<tr ondrop="handledrop(event)" ondragover="handledragover(event)" ondragleave="handledragleave(event)" class="draglistener"><td colspan="6"></td></tr>`)
+
+        e.target.parentNode.parentNode.insertBefore(newListener, e.target.parentNode)
+        e.target.parentNode.parentNode.insertBefore(draggedElement, e.target.parentNode)
+        e.target.classList.remove("dragselected")
+
+        trimExtraListenerIfPresent();
+    }
+}
+
+function validDragListener(listener) {
+    return draggedElement.nextSibling != listener && draggedElement.previousSibling!=listener
+    && draggedElement.nextSibling.nextSibling != listener && draggedElement.previousSibling.previousSibling != listener
+}
+
+function trimExtraListenerIfPresent() {
+    // trims a "first listener" if it is present
+    let rows = pointTable.getElementsByTagName("tbody")[0].childNodes
+    for(let i=0;i<rows.length;i++) {
+        if (rows[i].nodeType != 3 && rows[i].classList.contains("draglistener")) {
+            pointTable.getElementsByTagName("tbody")[0].removeChild(rows[i])
+        } else if (rows[i].nodeType !=3) break;
+    }
+}
+
+
+function htmlToElement(html) {
+    var template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+
+// make the adding actually add with drag events
+// fix css
+// cursor pointer while dragging
