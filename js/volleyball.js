@@ -302,6 +302,7 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
     trash.innerHTML = "delete_outline"
     
     let row = document.createElement("tr");
+    row.classList.add("pointsGrid-row")
 
     row.appendChild(drag)
     row.appendChild(point)
@@ -311,4 +312,17 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
     row.appendChild(trash)
 
     pointTable.appendChild(row)
+
+    updateTrashListeners()
+}
+
+function updateTrashListeners() {
+    let trashes = document.getElementsByClassName("pointsGrid-trash");
+    let pointsRows = document.getElementsByClassName("pointsGrid-row");
+
+    for(let i=0;i<trashes.length;i++) {
+        trashes[i].addEventListener("click", function() {
+            pointTable.removeChild(pointsRows[i])
+        })
+    }
 }
