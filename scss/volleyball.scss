@@ -92,7 +92,37 @@ body {
     }
 }
 
-// input[t]
+#pointTable {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    th {
+        padding-bottom: 20px;
+        text-decoration: underline;
+    }
+    .c {
+        padding: 5px 10px;
+    }
+
+    .pointsGrid-point-ours {
+        background-color: #43a047;
+    }
+    .pointsGrid-point-theirs {
+        background-color: #e53935;
+    }
+
+    .pointsGrid-drag, .pointsGrid-trash {
+        cursor: pointer;
+        transition: opacity .2s;
+        &:hover {
+            opacity: 0.5;
+        }
+    }
+}
+
+table#pointTable tr:nth-child(even) {
+  background-color: #eee;
+}
 
 input[type=button] {
     border: none;

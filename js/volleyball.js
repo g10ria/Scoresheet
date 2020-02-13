@@ -240,10 +240,10 @@ addReasonOptsListeners()
 
 function triggerAddPointSubmit() {
     if (addpointPlayerLabel.innerHTML == "Player") {
-        alert("Please select a player.")    // todo: make this a real error indicator
+        alert("Please select a player.")
         return
     } else if (addpointReasonLabel.innerHTML == "Reason") {
-        alert("Please select a reason.")    // todo: make this a real error indicator
+        alert("Please select a reason.")
         return
     }
 
@@ -252,10 +252,63 @@ function triggerAddPointSubmit() {
     let isKill = ours && ourPlayer || !ours && !ourPlayer
     let player = ours ? OUR_PLAYERS[addpoint.player] : THEIR_PLAYERS[addpoint.player]
     let reason = isKill ? KILL_REASONS[addpoint.reason] : ERROR_REASONS[addpoint.reason]
+
+    triggerAddPointFirstClick(ours) // resetting add point input
     
-    console.log(`Submitting add point:
-        ${ours ? "Our point" : "Opponent's point" }
-        Player: ${player}
-        ${isKill ? "Kill point" : "Error point"}
-        Reason: ${reason}`)
+    addPoint(ours, isKill, addpoint.player, addpoint.reason, player, reason)
+}
+
+// ourPlayer = if it is was us or not
+// isKill - if it was a kill or not
+
+const points = []
+let isGray = false
+// {
+//     ours,
+//     kill/error,
+//     playerIndex,
+//     reasonIndex
+// }
+const pointTable = document.getElementById("pointTable")
+
+function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) {
+    points.push({
+        ours,
+        isKill,
+        playerIndex,
+        reasonIndex
+    })
+
+    let drag = document.createElement("td"); drag.classList.add("pointsGrid-drag"); drag.classList.add("material-icons"); drag.classList.add("c")
+    let point = document.createElement("td"); point.classList.add("pointsGrid-point"); point.classList.add("c");
+    let error = document.createElement("td"); error.classList.add("pointsGrid-error"); error.classList.add("c");
+    let player = document.createElement("td"); player.classList.add("pointsGrid-player"); player.classList.add("c");
+    let reason = document.createElement("td"); reason.classList.add("pointsGrid-reason"); reason.classList.add("c");
+    let trash = document.createElement("td"); trash.classList.add("pointsGrid-trash"); trash.classList.add("material-icons"); trash.classList.add("c");
+
+    drag.innerHTML = "drag_indicator"
+
+    if (ours) point.classList.add("pointsGrid-point-ours")
+    else point.classList.add("pointsGrid-point-theirs")
+
+    error.innerHTML =   (ours && isKill) ? "Our kill" :
+                        (ours && !isKill) ? "Their error" :
+                        (!ours && isKill) ? "Their kill" :
+                        "Their error";
+
+    player.innerHTML = playerStr;
+    reason.innerHTML = reasonStr;
+
+    trash.innerHTML = "delete_outline"
+    
+    let row = document.createElement("tr");
+
+    row.appendChild(drag)
+    row.appendChild(point)
+    row.appendChild(error)
+    row.appendChild(player)
+    row.appendChild(reason)
+    row.appendChild(trash)
+
+    pointTable.appendChild(row)
 }

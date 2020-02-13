@@ -115,6 +115,43 @@ body {
   padding: 10px;
 }
 
+#pointTable {
+  width: 100%;
+  border: none;
+  border-collapse: collapse;
+}
+
+#pointTable th {
+  padding-bottom: 20px;
+  text-decoration: underline;
+}
+
+#pointTable .c {
+  padding: 5px 10px;
+}
+
+#pointTable .pointsGrid-point-ours {
+  background-color: #43a047;
+}
+
+#pointTable .pointsGrid-point-theirs {
+  background-color: #e53935;
+}
+
+#pointTable .pointsGrid-drag, #pointTable .pointsGrid-trash {
+  cursor: pointer;
+  -webkit-transition: opacity .2s;
+  transition: opacity .2s;
+}
+
+#pointTable .pointsGrid-drag:hover, #pointTable .pointsGrid-trash:hover {
+  opacity: 0.5;
+}
+
+table#pointTable tr:nth-child(even) {
+  background-color: #eee;
+}
+
 input[type=button] {
   border: none;
   border-radius: 3px;
