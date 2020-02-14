@@ -262,14 +262,13 @@ function triggerAddPointSubmit() {
 // isKill - if it was a kill or not
 
 const points = []
-let isGray = false
 // {
 //     ours,
 //     kill/error,
 //     playerIndex,
 //     reasonIndex
 // }
-const pointTable = document.getElementById("pointTable")
+const pointTable = document.getElementsByTagName("tbody")[0]
 
 function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) {
     points.push({
@@ -279,14 +278,12 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
         reasonIndex
     })
 
-    let drag = document.createElement("td"); drag.classList.add("pointsGrid-drag"); drag.classList.add("material-icons"); drag.classList.add("c")
-    let point = document.createElement("td"); point.classList.add("pointsGrid-point"); point.classList.add("c");
-    let error = document.createElement("td"); error.classList.add("pointsGrid-error"); error.classList.add("c");
-    let player = document.createElement("td"); player.classList.add("pointsGrid-player"); player.classList.add("c");
-    let reason = document.createElement("td"); reason.classList.add("pointsGrid-reason"); reason.classList.add("c");
-    let trash = document.createElement("td"); trash.classList.add("pointsGrid-trash"); trash.classList.add("material-icons"); trash.classList.add("c");
-
-    drag.innerHTML = "drag_indicator"
+    let drag = htmlToElement(`<td class="pointsGrid-drag material-icons c">drag_indicator</td>`)
+    let point = htmlToElement(`<td class="pointsGrid-point c"></td>`)
+    let error = htmlToElement(`<td class="pointsGrid-error c"></td>`)
+    let player = htmlToElement(`<td class="pointsGrid-player c">John Pencil (12)</td>`)
+    let reason = htmlToElement(`<td class="pointsGrid-reason c">errorreason1</td>`)
+    let trash = htmlToElement(`<td class="pointsGrid-trash material-icons c">delete_outline</td>`)
 
     if (ours) point.classList.add("pointsGrid-point-ours")
     else point.classList.add("pointsGrid-point-theirs")
@@ -299,10 +296,7 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
     player.innerHTML = playerStr;
     reason.innerHTML = reasonStr;
 
-    trash.innerHTML = "delete_outline"
-    
-    let row = document.createElement("tr");
-    row.classList.add("pointsGrid-row")
+    let row = htmlToElement(`<tr class="pointsGrid-row" draggable="true" ondragstart="handledragstart(event)" id="${new Date().getTime()}" ondragend="handledragend(event)"></tr>`)
 
     row.appendChild(drag)
     row.appendChild(point)
@@ -311,7 +305,11 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
     row.appendChild(reason)
     row.appendChild(trash)
 
-    pointTable.appendChild(row)
+    pointTable.prepend(row)
+
+    let newListener = htmlToElement(`<tr ondrop="handledrop(event)" ondragover="handledragover(event)" ondragleave="handledragleave(event)" class="draglistener"><td colspan="6"></td></tr>`)
+
+    pointTable.prepend(newListener)
 
     updateTrashListeners()
 }
@@ -319,23 +317,28 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
 function updateTrashListeners() {
     let trashes = document.getElementsByClassName("pointsGrid-trash");
     let pointsRows = document.getElementsByClassName("pointsGrid-row");
+    let dragListeners = document.getElementsByClassName("draglistener")
 
     for(let i=0;i<trashes.length;i++) {
+        // trashes[i].removeEventListener("click", )
+        console.log(trashes[i].)
+        // monday tuesday
         trashes[i].addEventListener("click", function() {
-            pointTable.removeChild(pointsRows[i])
+            pointTable.removeChild(dragListeners[i])
+            pointTable.removeChild(pointsRows[i+1])
         })
     }
 }
+updateTrashListeners()
 
-let draggedElement = null
+let draggedElement = undefined;
 
 function handledragstart(e) {
     e.dataTransfer.dropEffect = "move"
     e.dataTransfer.setData("text/plain", e.target.id)
-    e.target.classList.add("translucent")
+    e.target.classList.add("translucent");
 
     draggedElement = e.target
-    console.log(draggedElement)
 }
 
 function handledragend(e) {
@@ -344,15 +347,14 @@ function handledragend(e) {
     for (let i=0;i<dragTargets.length;i++) {
         dragTargets[i].classList.remove("dragselected")
     }
+    document.body.style.cursor = "default";
 }
 
 function handledragover(e) {
     e.preventDefault()
     e.dataTransfer.dropEffect = "move"
 
-    if (validDragListener(e.target.parentNode)) {
-        e.target.classList.add("dragselected")
-    }
+    if (validDragListener(e.target.parentNode)) e.target.classList.add("dragselected")
 }
 
 function handledragleave(e) {
@@ -361,16 +363,21 @@ function handledragleave(e) {
 
 function handledrop(e) {
     e.preventDefault()
-    let id = e.dataTransfer.getData("text/plain")
 
     if (validDragListener(e.target.parentNode)) {
         let newListener = htmlToElement(`<tr ondrop="handledrop(event)" ondragover="handledragover(event)" ondragleave="handledragleave(event)" class="draglistener"><td colspan="6"></td></tr>`)
 
-        e.target.parentNode.parentNode.insertBefore(newListener, e.target.parentNode)
-        e.target.parentNode.parentNode.insertBefore(draggedElement, e.target.parentNode)
-        e.target.classList.remove("dragselected")
+        let rows = document.getElementsByClassName("pointsGrid-row")
+        let listeners = document.getElementsByClassName("draglistener")
+        let index
+        for(let i=0;i<rows.length;i++) {
+            if (rows[i] == draggedElement) index = i
+        }
+        pointTable.removeChild(listeners[index+1])
 
-        trimExtraListenerIfPresent();
+        pointTable.insertBefore(newListener, e.target.parentNode)
+        pointTable.insertBefore(draggedElement, e.target.parentNode)
+        e.target.classList.remove("dragselected")
     }
 }
 
@@ -381,14 +388,13 @@ function validDragListener(listener) {
 
 function trimExtraListenerIfPresent() {
     // trims a "first listener" if it is present
-    let rows = pointTable.getElementsByTagName("tbody")[0].childNodes
+    let rows = pointTable.childNodes
     for(let i=0;i<rows.length;i++) {
         if (rows[i].nodeType != 3 && rows[i].classList.contains("draglistener")) {
-            pointTable.getElementsByTagName("tbody")[0].removeChild(rows[i])
+            pointTable.removeChild(rows[i])
         } else if (rows[i].nodeType !=3) break;
     }
 }
-
 
 function htmlToElement(html) {
     var template = document.createElement('template');
@@ -397,7 +403,4 @@ function htmlToElement(html) {
     return template.content.firstChild;
 }
 
-
-// make the adding actually add with drag events
-// fix css
-// cursor pointer while dragging
+// handle the delete event being added multiple times TT
