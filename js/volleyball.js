@@ -321,7 +321,7 @@ function updateTrashListeners() {
 
     for(let i=0;i<trashes.length;i++) {
         // trashes[i].removeEventListener("click", )
-        console.log(trashes[i].)
+        // console.log(trashes[i].)
         // monday tuesday
         trashes[i].addEventListener("click", function() {
             pointTable.removeChild(dragListeners[i])
