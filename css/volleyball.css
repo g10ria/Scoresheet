@@ -115,15 +115,43 @@ body {
   padding: 10px;
 }
 
+#infoContainer {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+#infoContainer #set, #infoContainer #setScore {
+  margin: 10px;
+  border-width: 1px;
+  border-style: dotted;
+  border-color: gray;
+  padding: 5px;
+  border-radius: 2px;
+}
+
+#infoContainer .score {
+  border-width: 1px;
+  border-style: solid;
+  font-weight: 600;
+  padding: 20px;
+  font-size: 20px;
+  border-radius: 5px;
+}
+
+#infoContainer #ourPoints {
+  border-color: green;
+  color: green;
+}
+
 #pointTable {
   width: 100%;
   border: none;
   border-collapse: collapse;
+  margin-top: 10px;
 }
 
 #pointTable th {
   padding-bottom: 20px;
-  text-decoration: underline;
 }
 
 #pointTable .c {

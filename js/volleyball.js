@@ -272,6 +272,35 @@ const pointTable = document.getElementsByTagName("tbody")[0]
 
 let numPoints = 0;
 
+let gameStatus = {
+    currSet: 1,
+    ourSetsWon: 0,
+    theirSetsWon: 0,
+    ourPoints: 0,
+    theirPoints: 0
+}
+
+let ourPoints = document.getElementById("ourPoints")
+let theirPoints = document.getElementById("theirPoints")
+
+let set = document.getElementById("set")
+let setScore = document.getElementById("setScore")
+
+function updateGameStatus(isOurs) {
+    if (isOurs) gameStatus.ourPoints++
+    else gameStatus.theirPoints++ 
+    resolveGameStatus()   
+}
+
+function resolveGameStatus() {
+    ourPoints.innerHTML = pad(gameStatus.ourPoints)
+    theirPoints.innerHTML = pad(gameStatus.theirPoints)
+}
+
+function pad(num) {
+    return num<10 ? "0"+num : num
+}
+
 function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) {
     points.push({
         ours,
@@ -282,6 +311,10 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
 
     numPoints++
 
+    console.log("num points: "+numPoints)
+
+    updateGameStatus(ours)
+
     let drag = htmlToElement(`<td class="pointsGrid-drag material-icons c">drag_indicator</td>`)
     let point = htmlToElement(`<td class="pointsGrid-point c"></td>`)
     let error = htmlToElement(`<td class="pointsGrid-error c"></td>`)
@@ -290,8 +323,9 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
     let trash = htmlToElement(`<td class="pointsGrid-trash material-icons c">delete_outline</td>`)
 
 
+    let temp = numPoints;
     trash.addEventListener("click", function () {
-        removePoint(numPoints)
+        removePoint(temp)
     })
 
     if (ours) point.classList.add("pointsGrid-point-ours")
@@ -322,6 +356,8 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
 }
 
 function removePoint(index) {
+    console.log(index)
+    console.log(numPoints - index)
     let i = numPoints - index
     let pointsRows = document.getElementsByClassName("pointsGrid-row");
     let dragListeners = document.getElementsByClassName("draglistener")
