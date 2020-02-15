@@ -38,6 +38,7 @@ homegameInp.addEventListener("input", () => {
 });
 opponentInp.addEventListener("input", () => {
     opponent = opponentInp.value
+    resolveGameStatus()
 });
 dateInp.addEventListener("input", () => {
     date = dateInp.value
@@ -270,14 +271,15 @@ const points = []
 // }
 const pointTable = document.getElementsByTagName("tbody")[0]
 
-let numPoints = 0;
-
 let gameStatus = {
     currSet: 1,
+    sets: [],
     ourSetsWon: 0,
     theirSetsWon: 0,
     ourPoints: 0,
-    theirPoints: 0
+    theirPoints: 0,
+    over: false,
+    weWon: false // only set when over = true
 }
 
 let ourPoints = document.getElementById("ourPoints")
@@ -286,16 +288,128 @@ let theirPoints = document.getElementById("theirPoints")
 let set = document.getElementById("set")
 let setScore = document.getElementById("setScore")
 
+let gameoverDiv = document.getElementById("gameover")
+let winnerDiv = document.getElementById("winner")
+let finalscoreDiv = document.getElementById("finalscore")
+let setscoresDiv = document.getElementById("setscores")
+
 function resolveGameStatus() {
+
+    const NUM_SETS = 3
+
+    gameStatus.currSet = 1
+    gameStatus.ourPoints = 0
+    gameStatus.theirPoints = 0
+    gameStatus.ourSetsWon = 0
+    gameStatus.theirSetsWon = 0
+    gameStatus.over = false
+    gameStatus.weWon = false
+    gameStatus.sets = []
+
+    for(let i=0;i<points.length;i++) {
+        if (points[i].ours) {
+            gameStatus.ourPoints++
+
+            if (gameStatus.currSet == NUM_SETS) {   // on the last set, go to 15
+                if (gameStatus.ourPoints >= 15 && gameStatus.ourPoints - gameStatus.theirPoints > 1) {   // we have won the last set (and the game)
+                   gameStatus.over = true
+                   gameStatus.weWon = true
+
+                   gameStatus.ourSetsWon++
+
+                   gameStatus.sets.push({ourPoints: gameStatus.ourPoints, theirPoints: gameStatus.theirPoints})
+                }
+            } else {    // not on the last set
+                if (gameStatus.ourPoints >= 25 && gameStatus.ourPoints - gameStatus.theirPoints > 1) { // we have won the set
+                    
+                    gameStatus.ourSetsWon++
+
+                    gameStatus.sets.push({ ourPoints: gameStatus.ourPoints, theirPoints: gameStatus.theirPoints })
+
+                    if (gameStatus.ourSetsWon * 2 > NUM_SETS) { // we have also won the game
+                        gameStatus.over = true
+                        gameStatus.weWon = true
+                    } else {
+                        gameStatus.ourPoints = 0
+                        gameStatus.theirPoints = 0
+                        gameStatus.currSet++
+                    }
+
+                }
+            }
+
+        } else {
+            gameStatus.theirPoints++
+
+            if (gameStatus.currSet == NUM_SETS) {   // on the last set, go to 15
+                if (gameStatus.theirPoints >= 15 && gameStatus.theirPoints - gameStatus.ourPoints > 1) {   // they have won the last set (and the game)
+                    gameStatus.over = true
+                    gameStatus.weWon = false
+                
+                    gameStatus.theirSetsWon++
+
+                    gameStatus.sets.push({ ourPoints: gameStatus.ourPoints, theirPoints: gameStatus.theirPoints })
+                }
+            } else {    // not on the last set
+                if (gameStatus.theirPoints >= 25 && gameStatus.theirPoints - gameStatus.ourPoints > 1) { // they have won the set
+                    gameStatus.theirSetsWon++
+
+                    gameStatus.sets.push({ ourPoints: gameStatus.ourPoints, theirPoints: gameStatus.theirPoints })
+
+                    if (gameStatus.theirSetsWon * 2 > NUM_SETS) { // they have also won the game
+                        gameStatus.over = true
+                        gameStatus.weWon = false
+                    } else {
+                        gameStatus.ourPoints = 0
+                        gameStatus.theirPoints = 0
+                        gameStatus.currSet++
+                    }
+                }
+            }
+        }
+    }
+
     ourPoints.innerHTML = pad(gameStatus.ourPoints)
     theirPoints.innerHTML = pad(gameStatus.theirPoints)
+
+    set.innerHTML = `Set ${gameStatus.currSet}`
+    setScore.innerHTML = `${gameStatus.ourSetsWon} : ${gameStatus.theirSetsWon}`
+
+    if (gameStatus.over) {
+        gameoverDiv.innerHTML = "Game Over"
+        winnerDiv.innerHTML = `&nbsp;Winner:\t\t${gameStatus.weWon ? "Harker" : opponent}`
+        finalscore.innerHTML = "Final score:\t\t" + setScore.innerHTML
+        setscoresDiv.innerHTML = "Set scores: "
+        for(let i=0;i<gameStatus.currSet;i++) {
+            setscoresDiv.innerHTML += gameStatus.sets[i].ourPoints +":" + gameStatus.sets[i].theirPoints
+            if (i!=gameStatus.currSet-1) setscoresDiv.innerHTML += ", "
+        }
+    }
 }
 
 function pad(num) {
     return num<10 ? "0"+num : num
 }
 
+function addFakePoints() {
+    for (let i=0;i<25;i++) {
+        addPoint(true, true, 1, 1, "player", "reason");
+        
+    }
+    for(let i=0;i<25;i++) {
+        addPoint(false, true, 1, 1, "player", "reason");
+    }
+    for(let i=0;i<15;i++) {
+        addPoint(true, true, 1, 1, "player", "reason");
+        addPoint(false, true, 1, 1, "player", "reason");
+    }
+    addPoint(false, true, 1, 1, "player", "reason");
+    addPoint(false, true, 1, 1, "player", "reason");
+}
+addFakePoints()
+
 function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) {
+    if (gameStatus.over) return;
     points.push({
         ours,
         isKill,
@@ -303,10 +417,7 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
         reasonIndex
     })
 
-    numPoints++
-
-    if (ours) gameStatus.ourPoints++
-    else gameStatus.theirPoints++
+    console.log(gameStatus.ourPoints)
 
     resolveGameStatus()
 
@@ -363,6 +474,8 @@ function removePoint(i) {
     else gameStatus.theirPoints--
     pointTable.removeChild(dragListeners[i+1])
     pointTable.removeChild(pointsRows[i])
+
+    resolveGameStatus()
 }
 let draggedElement = undefined;
 
