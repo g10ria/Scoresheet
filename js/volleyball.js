@@ -286,12 +286,6 @@ let theirPoints = document.getElementById("theirPoints")
 let set = document.getElementById("set")
 let setScore = document.getElementById("setScore")
 
-function updateGameStatus(isOurs) {
-    if (isOurs) gameStatus.ourPoints++
-    else gameStatus.theirPoints++ 
-    resolveGameStatus()   
-}
-
 function resolveGameStatus() {
     ourPoints.innerHTML = pad(gameStatus.ourPoints)
     theirPoints.innerHTML = pad(gameStatus.theirPoints)
@@ -311,9 +305,10 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
 
     numPoints++
 
-    console.log("num points: "+numPoints)
+    if (ours) gameStatus.ourPoints++
+    else gameStatus.theirPoints++
 
-    updateGameStatus(ours)
+    resolveGameStatus()
 
     let drag = htmlToElement(`<td class="pointsGrid-drag material-icons c">drag_indicator</td>`)
     let point = htmlToElement(`<td class="pointsGrid-point c"></td>`)
@@ -322,10 +317,15 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
     let reason = htmlToElement(`<td class="pointsGrid-reason c">errorreason1</td>`)
     let trash = htmlToElement(`<td class="pointsGrid-trash material-icons c">delete_outline</td>`)
 
+    trash.addEventListener("click", function (e) {
 
-    let temp = numPoints;
-    trash.addEventListener("click", function () {
-        removePoint(temp)
+        let rows = document.getElementsByClassName("pointsGrid-row")
+        let index 
+        for(let i=0;i<rows.length;i++) {
+            if (rows[i]==e.target.parentNode) index = i
+        }
+
+        removePoint(index)
     })
 
     if (ours) point.classList.add("pointsGrid-point-ours")
@@ -355,16 +355,15 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
     pointTable.prepend(newListener)
 }
 
-function removePoint(index) {
-    console.log(index)
-    console.log(numPoints - index)
-    let i = numPoints - index
+function removePoint(i) {
+    points.splice(gameStatus.ourPoints + gameStatus.theirPoints - i - 1, 1)
     let pointsRows = document.getElementsByClassName("pointsGrid-row");
     let dragListeners = document.getElementsByClassName("draglistener")
+    if (pointsRows[i].classList.contains("pointsGrid-row-ours")) gameStatus.ourPoints--
+    else gameStatus.theirPoints--
     pointTable.removeChild(dragListeners[i+1])
     pointTable.removeChild(pointsRows[i])
 }
-
 let draggedElement = undefined;
 
 function handledragstart(e) {
@@ -407,11 +406,33 @@ function handledrop(e) {
         for(let i=0;i<rows.length;i++) {
             if (rows[i] == draggedElement) index = i
         }
-        pointTable.removeChild(listeners[index+1])
+        
+        let destIndex
+        for(let i=0;i<listeners.length;i++) {
+            if (listeners[i] == e.target.parentNode) destIndex = i
+        }
+
+        let original = gameStatus.ourPoints + gameStatus.theirPoints - index - 1
+        let target = gameStatus.ourPoints + gameStatus.theirPoints - destIndex
+        // note: both of these indices are relative to the original state
+
+        let temp = points[original]
+
+        if (original>target) {
+            points.splice(original, 1)
+            points.splice(target, 0, temp)
+        } else {
+            points.splice(target, 0, temp)
+            points.splice(original, 1)
+        }
+
+        pointTable.removeChild(listeners[index + 1])
 
         pointTable.insertBefore(newListener, e.target.parentNode)
         pointTable.insertBefore(draggedElement, e.target.parentNode)
         e.target.classList.remove("dragselected")
+
+        resolveGameStatus()
     }
 }
 
