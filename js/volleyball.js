@@ -270,6 +270,8 @@ const points = []
 // }
 const pointTable = document.getElementsByTagName("tbody")[0]
 
+let numPoints = 0;
+
 function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) {
     points.push({
         ours,
@@ -278,6 +280,8 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
         reasonIndex
     })
 
+    numPoints++
+
     let drag = htmlToElement(`<td class="pointsGrid-drag material-icons c">drag_indicator</td>`)
     let point = htmlToElement(`<td class="pointsGrid-point c"></td>`)
     let error = htmlToElement(`<td class="pointsGrid-error c"></td>`)
@@ -285,13 +289,18 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
     let reason = htmlToElement(`<td class="pointsGrid-reason c">errorreason1</td>`)
     let trash = htmlToElement(`<td class="pointsGrid-trash material-icons c">delete_outline</td>`)
 
+
+    trash.addEventListener("click", function () {
+        removePoint(numPoints)
+    })
+
     if (ours) point.classList.add("pointsGrid-point-ours")
     else point.classList.add("pointsGrid-point-theirs")
 
     error.innerHTML =   (ours && isKill) ? "Our kill" :
                         (ours && !isKill) ? "Their error" :
                         (!ours && isKill) ? "Their kill" :
-                        "Their error";
+                        "Our error";
 
     player.innerHTML = playerStr;
     reason.innerHTML = reasonStr;
@@ -310,26 +319,15 @@ function addPoint(ours, isKill, playerIndex, reasonIndex, playerStr, reasonStr) 
     let newListener = htmlToElement(`<tr ondrop="handledrop(event)" ondragover="handledragover(event)" ondragleave="handledragleave(event)" class="draglistener"><td colspan="6"></td></tr>`)
 
     pointTable.prepend(newListener)
-
-    updateTrashListeners()
 }
 
-function updateTrashListeners() {
-    let trashes = document.getElementsByClassName("pointsGrid-trash");
+function removePoint(index) {
+    let i = numPoints - index
     let pointsRows = document.getElementsByClassName("pointsGrid-row");
     let dragListeners = document.getElementsByClassName("draglistener")
-
-    for(let i=0;i<trashes.length;i++) {
-        // trashes[i].removeEventListener("click", )
-        // console.log(trashes[i].)
-        // monday tuesday
-        trashes[i].addEventListener("click", function() {
-            pointTable.removeChild(dragListeners[i])
-            pointTable.removeChild(pointsRows[i+1])
-        })
-    }
+    pointTable.removeChild(dragListeners[i+1])
+    pointTable.removeChild(pointsRows[i])
 }
-updateTrashListeners()
 
 let draggedElement = undefined;
 
