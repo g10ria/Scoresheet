@@ -25,16 +25,19 @@ const ERROR_REASONS = [
     "errorreason3"
 ];
 
-var home = false;
+var home = true;
 var opponent = ""
 var date = ""
+var numsets = 3
 
 let homegameInp = id("homegameInp")
 let opponentInp = id("opponentInp")
 let dateInp = id("dateInp");
+let numsetsInp = id("numsetsInp")
 
 homegameInp.addEventListener("input", () => {
     home = !home
+    resolveGameStatus()
 });
 opponentInp.addEventListener("input", () => {
     opponent = opponentInp.value
@@ -42,7 +45,13 @@ opponentInp.addEventListener("input", () => {
 });
 dateInp.addEventListener("input", () => {
     date = dateInp.value
+    resolveGameStatus()
 });
+numsetsInp.addEventListener("input", () => {
+    if (numsets==3) numsets = 5
+    else numsets = 3
+    resolveGameStatus()
+})
 
 // addpoint data
 let addpointFirstButtonClicked = false;
@@ -282,20 +291,21 @@ let gameStatus = {
     weWon: false // only set when over = true
 }
 
-let ourPoints = document.getElementById("ourPoints")
-let theirPoints = document.getElementById("theirPoints")
+let ourPoints = id("ourPoints")
+let theirPoints = id("theirPoints")
 
-let set = document.getElementById("set")
-let setScore = document.getElementById("setScore")
+let set = id("set")
+let setScore = id("setScore")
 
-let gameoverDiv = document.getElementById("gameover")
-let winnerDiv = document.getElementById("winner")
-let finalscoreDiv = document.getElementById("finalscore")
-let setscoresDiv = document.getElementById("setscores")
+let gameoverDiv = id("gameover")
+let winnerDiv = id("winner")
+let finalscoreDiv = id("finalscore")
+let setscoresDiv = id("setscores")
+let gamelocationDiv = id("gamelocation")
+let gamedateDiv = id("gamedate")
 
 function resolveGameStatus() {
-
-    const NUM_SETS = 3
+    console.log("resolving with numsets = "+numsets)
 
     gameStatus.currSet = 1
     gameStatus.ourPoints = 0
@@ -310,7 +320,7 @@ function resolveGameStatus() {
         if (points[i].ours) {
             gameStatus.ourPoints++
 
-            if (gameStatus.currSet == NUM_SETS) {   // on the last set, go to 15
+            if (gameStatus.currSet == numsets) {   // on the last set, go to 15
                 if (gameStatus.ourPoints >= 15 && gameStatus.ourPoints - gameStatus.theirPoints > 1) {   // we have won the last set (and the game)
                    gameStatus.over = true
                    gameStatus.weWon = true
@@ -326,7 +336,7 @@ function resolveGameStatus() {
 
                     gameStatus.sets.push({ ourPoints: gameStatus.ourPoints, theirPoints: gameStatus.theirPoints })
 
-                    if (gameStatus.ourSetsWon * 2 > NUM_SETS) { // we have also won the game
+                    if (gameStatus.ourSetsWon * 2 > numsets) { // we have also won the game
                         gameStatus.over = true
                         gameStatus.weWon = true
                     } else {
@@ -341,7 +351,7 @@ function resolveGameStatus() {
         } else {
             gameStatus.theirPoints++
 
-            if (gameStatus.currSet == NUM_SETS) {   // on the last set, go to 15
+            if (gameStatus.currSet == numsets) {   // on the last set, go to 15
                 if (gameStatus.theirPoints >= 15 && gameStatus.theirPoints - gameStatus.ourPoints > 1) {   // they have won the last set (and the game)
                     gameStatus.over = true
                     gameStatus.weWon = false
@@ -356,7 +366,7 @@ function resolveGameStatus() {
 
                     gameStatus.sets.push({ ourPoints: gameStatus.ourPoints, theirPoints: gameStatus.theirPoints })
 
-                    if (gameStatus.theirSetsWon * 2 > NUM_SETS) { // they have also won the game
+                    if (gameStatus.theirSetsWon * 2 > numsets) { // they have also won the game
                         gameStatus.over = true
                         gameStatus.weWon = false
                     } else {
@@ -377,13 +387,22 @@ function resolveGameStatus() {
 
     if (gameStatus.over) {
         gameoverDiv.innerHTML = "Game Over"
-        winnerDiv.innerHTML = `&nbsp;Winner:\t\t${gameStatus.weWon ? "Harker" : opponent}`
-        finalscore.innerHTML = "Final score:\t\t" + setScore.innerHTML
+        winnerDiv.innerHTML = `Winner:\t\t${gameStatus.weWon ? "Harker" : opponent}`
+        finalscoreDiv.innerHTML = "Final score:\t\t" + setScore.innerHTML
         setscoresDiv.innerHTML = "Set scores: "
         for(let i=0;i<gameStatus.currSet;i++) {
             setscoresDiv.innerHTML += gameStatus.sets[i].ourPoints +":" + gameStatus.sets[i].theirPoints
             if (i!=gameStatus.currSet-1) setscoresDiv.innerHTML += ", "
         }
+        gamelocationDiv.innerHTML = `Location:\t\t${home ? "Home" : "Away"}`
+        gamedateDiv.innerHTML = `Date:\t\t${date}`
+    } else {
+        gameoverDiv.innerHTML = ""
+        winnerDiv.innerHTML = ""
+        finalscoreDiv.innerHTML = ""
+        setscoresDiv.innerHTML = ""
+        gamelocationDiv.innerHTML = ""
+        gamedateDiv.innerHTML = ""
     }
 }
 
@@ -404,7 +423,7 @@ function addFakePoints() {
         addPoint(false, true, 1, 1, "player", "reason");
     }
     addPoint(false, true, 1, 1, "player", "reason");
-    addPoint(false, true, 1, 1, "player", "reason");
+    // addPoint(false, true, 1, 1, "player", "reason");
 }
 addFakePoints()
 
