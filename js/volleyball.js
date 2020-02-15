@@ -53,6 +53,21 @@ numsetsInp.addEventListener("input", () => {
     resolveGameStatus()
 })
 
+let navOpen = id("navicon")
+let navClose = id("navmenu-close")
+
+let nav = id("navmenu")
+let navChildren = cl("navmenu-child")
+
+navOpen.addEventListener("click", () => {
+    nav.classList.add("open")
+    nav.classList.remove("close")
+})
+navClose.addEventListener("click", () => {
+    nav.classList.add("close")
+    nav.classList.remove("open")
+})
+
 // addpoint data
 let addpointFirstButtonClicked = false;
 let addpointSecondButtonClicked = false;
